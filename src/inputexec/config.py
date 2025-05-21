@@ -224,7 +224,7 @@ class UnifiedParser(object):
         # First, get the --config option.
         simple_parser = self.make_parser(full=False)
         simple_args, _extra = simple_parser.parse_known_args(argv)
-        cp = configparser.SafeConfigParser()
+        cp = configparser.ConfigParser()
         if simple_args.config:
             cp.read(simple_args.config)
 

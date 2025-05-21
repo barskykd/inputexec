@@ -47,7 +47,7 @@ class Setup(object):
 
         Group('source', "Source", [
             Arg('--file', help="The source to read from (e.g /dev/input/event0)", default='-'),
-            Arg('--mode', choices=['exclusive', 'shared'], default='exclusive',
+            Arg('--mode', choices=['exclusive', 'shared'], default='shared',
                 help="Get shared/exclusive hold of the input device (evdev only)"),
         ]),
 
@@ -193,6 +193,6 @@ class Setup(object):
                 self.error('%s: %s' % (e.__class__.__name__, e), 2)
 
 
-def main(argv):
+def main():
     setup = Setup()
-    setup.run(argv)
+    setup.run(sys.argv)

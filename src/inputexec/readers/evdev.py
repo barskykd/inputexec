@@ -31,7 +31,6 @@ EVENT_ABSMOVE = 'absmove'
 
 
 def map_event(evdev_event):
-
     code = evdev_event.code
 
     if evdev_event.type == evdev.events.EV_SYN:
@@ -54,7 +53,7 @@ def map_event(evdev_event):
         elif evdev_event.value == evdev.events.KeyEvent.key_hold:
             kind = EVENT_KEYHOLD
         else:
-            raise UnhandledEvent("Unhandled evdev.InputEvent.value %d" % evdev_event.value)
+            return None
 
         symbol = evdev.events.keys[evdev_event.code]
         if isinstance(symbol, list):
@@ -62,7 +61,7 @@ def map_event(evdev_event):
             symbol = symbol[0]
 
     else:
-        raise UnhandledEvent("Unhandled evdev.InputEvent.type %d" % evdev_event.type)
+        return None
 
     return events.Event(kind, code, symbol, evdev_event.value)
 
@@ -80,7 +79,7 @@ class Filter(object):
 
 def open_device(path):
     device = evdev.InputDevice(path)
-    logger.info("Opened device %s (%s)", device.fn, device.name)
+    logger.info("Opened device %s (%s)", device.fd, device.name)
     return device
 
 
@@ -99,7 +98,7 @@ class EvdevReader(base.BaseReader):
             reading
     """
 
-    def __init__(self, evdev_device, filter=None, exclusive=True, **kwargs):
+    def __init__(self, evdev_device, filter=None, exclusive=False, **kwargs):
         super(EvdevReader, self).__init__(**kwargs)
         self.device = evdev_device
         self.filter = filter

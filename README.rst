@@ -27,37 +27,14 @@ The ``--action-commands`` file contains action to map to each keypress:
 Installation
 ------------
 
-inputexec is distributed under the 2-clause BSD license, and needs Python 2.6-3.9
-
-Distribution packages (recommended)
-"""""""""""""""""""""""""""""""""""
-
-Use distribution-specific packages if they are available.
-The author knows of the following options:
-
-* None yet
-
-
-From PyPI, the Python package index
-"""""""""""""""""""""""""""""""""""
-
-Simply run:
-
-.. code-block:: sh
-
-    pip install inputexec
+inputexec is distributed under the 2-clause BSD license, and needs Python 3.13
 
 
 From source
 """""""""""
 
-You'll need the python-evdev_ library, available from PyPI (https://pypi.python.org/pypi/evdev).
-
-Then, run:
-
-.. code-block:: sh
-
-    git clone https://github.com/rbarrois/evdev.git
+* Clone this repostiory
+* Run ``pip install .``
 
 
 Launching and configuration
@@ -138,76 +115,5 @@ Logging verbosity can be adjusted through ``--logging-level=``.
 The ``--traceback`` option enables dumping full (Python) stack upon exceptions.
 
 
-Running as non-root daemon
---------------------------
-
-By default, input devices in ``/dev/input`` can only be accessed by ``root:root``.
-
-Users are advised to setup a dedicated user/group for inputexec, and to give
-read/write to the target device to that user.
-
-Giving access to the device is often a ``udev`` configuration task.
-
-First, find the ID of your device; look at ``/dev/input/by-id`` and ``/dev/input/by-path``,
-which provide stabler names than ``/dev/input/event3``.
-
-Once you've found your device (you may also look at ``lsusb``, kernel logs when plugging/unplugging, etc.),
-you'll need some rules for udev to find it:
-
-.. code-block:: sh
-
-    $ udevadm info --attribute-walk --name=/dev/input/by-id/usb-13ec_0006-event-kbd
-
-You'll get lots of lines, focus on the 2-3 first blocks, and try to find attributes
-specific to your device; for me, this was::
-
-      SUBSYSTEMS=="input"
-      ATTRS{idVendor}=="13ec"
-      ATTRS{idProduct}=="0006"
 
 
-You can now write the udev rule, for instance into ``/etc/udev/rules.d/80_setup_inputexec.rules``:
-
-.. code-block:: sh
-
-    # Include the matching attributes first (with ==), then force mode and group.
-    SUBSYSTEM=="input", ATTRS{idVendor}=="13ec", ATTRS{idProduct}=="0006", MODE="660", GROUP="rcinput"
-
-Now, unplug/replug your device and check that permissions on the target ``/dev/input/eventX``
-match your expectations.
-
-
-Contributing, reporting issues
-------------------------------
-
-If you find an issue or have suggestions for improvements, feel free to contact me:
-
-* Open an issue on `GitHub <https://github.com/rbarrois/inputexec/issues>`_
-* Send me an email at raphael.barrois+inputexec@polytechnique.org
-* Ping me on IRC, I'm Xelnor on irc.libera.chat
-
-
-TODO
-----
-
-This section lists features, improvements and other ideas to implement.
-
-* Port to BSD kernel
-* Add exhaustive unit testing
-* Write man page and init.d service definitions
-
-
-Links
------
-
-Source code and issues:
-  https://github.com/rbarrois/inputexec
-
-PyPI:
-  http://pypi.python.org/pypi/inputexec
-
-Documentation:
-  http://inputexec.readthedocs.org/en/latest (not yet)
-
-
-.. _python-evdev: http://pythonhosted.org/evdev/
